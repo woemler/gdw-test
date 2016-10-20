@@ -27,6 +27,7 @@ public class ControllerTests {
 	@Autowired LinkDiscoverers links;
 	
 	private MockMvc mockMvc; 
+	private static final String ROOT_URL = "/api/genes";
 	
 	@Before
 	public void setup(){
@@ -34,24 +35,30 @@ public class ControllerTests {
 	}
 	
 	@Test
-	public void geneControllerTest() throws Exception {
+	public void findAllTest() throws Exception {
 
-		mockMvc.perform(get("/api/genes"))
+		mockMvc.perform(get(ROOT_URL))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("_embedded")))
 				.andExpect(jsonPath("$._embedded", hasKey("genes")))
 				.andExpect(jsonPath("$._embedded.genes", hasSize(5)))
 				.andExpect(jsonPath("$._embedded.genes[0]", hasKey("geneSymbol")))
 				.andExpect(jsonPath("$._embedded.genes[0].geneSymbol", is("GeneA")));
+	}
 
-		mockMvc.perform(get("/api/genes?geneSymbol=GeneB"))
+	@Test
+	public void findByStringAttribute() throws Exception {
+		mockMvc.perform(get(ROOT_URL + "?geneSymbol=GeneB"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("_embedded")))
 				.andExpect(jsonPath("$._embedded", hasKey("genes")))
 				.andExpect(jsonPath("$._embedded.genes", hasSize(1)))
 				.andExpect(jsonPath("$._embedded.genes[0]", hasKey("geneSymbol")))
 				.andExpect(jsonPath("$._embedded.genes[0].geneSymbol", is("GeneB")));
-
+	}
+	
+	@Test
+	public void findByListAttribute() throws Exception {
 		mockMvc.perform(get("/api/genes?aliases=DEF"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("_embedded")))
@@ -59,15 +66,50 @@ public class ControllerTests {
 				.andExpect(jsonPath("$._embedded.genes", hasSize(1)))
 				.andExpect(jsonPath("$._embedded.genes[0]", hasKey("geneSymbol")))
 				.andExpect(jsonPath("$._embedded.genes[0].geneSymbol", is("GeneB")));
+	}
+	
+	@Test
+	public void findByMapAttribute() throws Exception {
+				mockMvc.perform(get("/api/genes?attributes.isKinase=Y"))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$", hasKey("_embedded")))
+						.andExpect(jsonPath("$._embedded", hasKey("genes")))
+						.andExpect(jsonPath("$._embedded.genes", hasSize(2)))
+						.andExpect(jsonPath("$._embedded.genes[1]", hasKey("geneSymbol")))
+						.andExpect(jsonPath("$._embedded.genes[1].geneSymbol", is("GeneC")));
+	}
 
-//		mockMvc.perform(get("/api/genes?attributes.isKinase=Y"))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$", hasKey("_embedded")))
-//				.andExpect(jsonPath("$._embedded", hasKey("genes")))
-//				.andExpect(jsonPath("$._embedded.genes", hasSize(2)))
-//				.andExpect(jsonPath("$._embedded.genes[1]", hasKey("geneSymbol")))
-//				.andExpect(jsonPath("$._embedded.genes[1].geneSymbol", is("GeneC")));
+	@Test
+	public void findByStringCaseInsensitive() throws Exception {
+		mockMvc.perform(get(ROOT_URL + "?geneSymbol=gened"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("_embedded")))
+				.andExpect(jsonPath("$._embedded", hasKey("genes")))
+				.andExpect(jsonPath("$._embedded.genes", hasSize(1)))
+				.andExpect(jsonPath("$._embedded.genes[0]", hasKey("geneSymbol")))
+				.andExpect(jsonPath("$._embedded.genes[0].geneSymbol", is("GeneD")));
+	}
+	
+	@Test
+	public void findByStringEndsWith() throws Exception {
+		mockMvc.perform(get(ROOT_URL + "?geneSymbolEndsWith=D"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("_embedded")))
+				.andExpect(jsonPath("$._embedded", hasKey("genes")))
+				.andExpect(jsonPath("$._embedded.genes", hasSize(1)))
+				.andExpect(jsonPath("$._embedded.genes[0]", hasKey("geneSymbol")))
+				.andExpect(jsonPath("$._embedded.genes[0].geneSymbol", is("GeneD")));
+	}
 
+	@Test
+	public void findByStringStartsWith() throws Exception {
+		mockMvc.perform(get(ROOT_URL + "?geneSymbolStartsWith=Gene"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("_embedded")))
+				.andExpect(jsonPath("$._embedded", hasKey("genes")))
+				.andExpect(jsonPath("$._embedded.genes", hasSize(5)))
+				.andExpect(jsonPath("$._embedded.genes[0]", hasKey("geneSymbol")))
+				.andExpect(jsonPath("$._embedded.genes[0].geneSymbol", is("GeneA")));
 	}
 	
 	// TODO: Crud test

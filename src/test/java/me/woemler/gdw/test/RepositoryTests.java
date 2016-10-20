@@ -1,15 +1,12 @@
 package me.woemler.gdw.test;
 
+import com.querydsl.core.types.dsl.*;
 import me.woemler.gdw.Gene;
 import me.woemler.gdw.GeneRepository;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.ListPath;
-import com.querydsl.core.types.dsl.MapPath;
-import com.querydsl.core.types.dsl.PathBuilder;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,11 +111,6 @@ public class RepositoryTests {
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 2);
 		Assert.isTrue(genes.get(0).getGeneSymbol().equals("GeneA"));
-
-	}
-
-	@Test
-	public void queryDslDynamicQueryTest() throws Exception {
 
 	}
 
