@@ -1,4 +1,4 @@
-package me.woemler.gdw;
+package me.woemler.gdw.web;
 
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 

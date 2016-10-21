@@ -1,4 +1,4 @@
-package me.woemler.gdw;
+package me.woemler.gdw.web;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
@@ -17,6 +17,9 @@ import org.springframework.util.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import me.woemler.gdw.repositories.QueryParameterUtil;
+import me.woemler.gdw.repositories.QuerydslParameterDescriptor;
 
 /**
  * @author woemler
@@ -42,6 +45,8 @@ public class DynamicParameterPredicateBuilder extends QuerydslPredicateBuilder {
 		
 		Class<?> model = type.getType();
 		Path<?> entityPath = Expressions.path(model, model.getSimpleName());
+		Map<String, QuerydslParameterDescriptor> parameterDescriptorMap
+				= QueryParameterUtil.getAvailableQueryParameters(model);
 
 		for (Map.Entry<String, List<String>> param : parameters.entrySet()) {
 
@@ -51,23 +56,29 @@ public class DynamicParameterPredicateBuilder extends QuerydslPredicateBuilder {
 			}
 
 			String path = param.getKey();
-			// TODO: get available query params
-			// TODO: does the path match any of the params with prefix?
-			// TODO: If yes, add predicate, if no pass
+			Predicate predicate = null;
+			if (parameterDescriptorMap.containsKey(path)){
+				QuerydslParameterDescriptor descriptor = parameterDescriptorMap.get(path);
+				predicate = Expressions.predicate(descriptor.getOperation(),
+						descriptor.getPath(),
+						Expressions.constant(param.getValue().get(0)));
+			}
+			// TODO: Seperate path usage for list and maps (see repository test)
+			// TODO: Type conversion from string to field type.
 			
 			
-			if (!bindings.isPathAvailable(path, type)) {
-				continue;
-			}
-
-			PropertyPath propertyPath = bindings.getPropertyPath(path, type);
-
-			if (propertyPath == null) {
-				continue;
-			}
-
-			Collection<Object> value = convertToPropertyPathSpecificType(entry.getValue(), propertyPath);
-			Predicate predicate = invokeBinding(propertyPath, bindings, value);
+//			if (!bindings.isPathAvailable(path, type)) {
+//				continue;
+//			}
+//
+//			PropertyPath propertyPath = bindings.getPropertyPath(path, type);
+//
+//			if (propertyPath == null) {
+//				continue;
+//			}
+//
+//			Collection<Object> value = convertToPropertyPathSpecificType(entry.getValue(), propertyPath);
+//			Predicate predicate = invokeBinding(propertyPath, bindings, value);
 
 			if (predicate != null) {
 				builder.and(predicate);
@@ -77,8 +88,4 @@ public class DynamicParameterPredicateBuilder extends QuerydslPredicateBuilder {
 		return builder.getValue();
 	}
 
-	private static boolean isSingleElementCollectionWithoutText(List<String> source) {
-		return source.size() == 1 && !StringUtils.hasText(source.get(0));
-	}
-	
 }

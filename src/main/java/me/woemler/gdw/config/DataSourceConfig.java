@@ -1,4 +1,4 @@
-package me.woemler.gdw;
+package me.woemler.gdw.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,9 +1,11 @@
-package me.woemler.gdw;
+package me.woemler.gdw.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.woemler.gdw.models.Gene;
 
 /**
  * @author woemler

@@ -1,8 +1,8 @@
 package me.woemler.gdw.test;
 
 import com.querydsl.core.types.dsl.*;
-import me.woemler.gdw.Gene;
-import me.woemler.gdw.GeneRepository;
+import me.woemler.gdw.models.Gene;
+import me.woemler.gdw.repositories.GeneRepository;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Path;

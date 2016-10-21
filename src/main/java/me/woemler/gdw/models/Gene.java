@@ -1,4 +1,4 @@
-package me.woemler.gdw;
+package me.woemler.gdw.models;
 
 
 import javax.persistence.*;

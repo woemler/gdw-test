@@ -1,4 +1,4 @@
-package me.woemler.gdw;
+package me.woemler.gdw.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import me.woemler.gdw.models.Gene;
+import me.woemler.gdw.repositories.GeneRepository;
 
 /**
  * @author woemler

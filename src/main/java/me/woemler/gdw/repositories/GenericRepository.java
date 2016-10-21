@@ -1,4 +1,4 @@
-package me.woemler.gdw;
+package me.woemler.gdw.repositories;
 
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.NoRepositoryBean;

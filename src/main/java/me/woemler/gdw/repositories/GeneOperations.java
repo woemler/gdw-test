@@ -1,6 +1,8 @@
-package me.woemler.gdw;
+package me.woemler.gdw.repositories;
 
 import java.util.List;
+
+import me.woemler.gdw.models.Gene;
 
 /**
  * @author woemler
